@@ -15,6 +15,7 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(BASE_DIR, 'apps'))
+sys.path.insert(0, os.path.join(BASE_DIR, 'extras_apps'))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
@@ -41,8 +42,11 @@ INSTALLED_APPS = [
     'courses',
     'operation',
     'organization',
+    'xadmin',
+    'crispy_forms',
 ]
 
+# 重载user表，使我们自己定义的userprofile表生效
 AUTH_USER_MODEL = "users.UserProfile"
 
 MIDDLEWARE = [
@@ -86,7 +90,7 @@ DATABASES = {
         'NAME': 'mxonline3',
         'USER': 'root',
         'PASSWORD': '123456',
-        'HOST':'127.0.0.1',
+        'HOST': '127.0.0.1',
     }
 }
 
@@ -115,13 +119,13 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'zh-Hans'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Shanghai'
 
 USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)

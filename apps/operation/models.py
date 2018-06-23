@@ -4,6 +4,7 @@ from users.models import UserProfile
 from courses.models import Course
 
 
+# 用户我要学习的表
 class UserAsk(models.Model):
     name = models.CharField(max_length=20, verbose_name="姓名")
     mobile = models.CharField(max_length=11, verbose_name="手机")
@@ -14,7 +15,11 @@ class UserAsk(models.Model):
         verbose_name = "用户咨询"
         verbose_name_plural = verbose_name
 
+    def __str__(self):
+        return self.name
 
+
+# 用户对课程的评价
 class CourseComments(models.Model):
     course = models.ForeignKey(Course, verbose_name="课程", on_delete=models.CASCADE)
     user = models.ForeignKey(UserProfile, verbose_name="用户", on_delete=models.CASCADE)
@@ -25,7 +30,11 @@ class CourseComments(models.Model):
         verbose_name = "课程评论"
         verbose_name_plural = verbose_name
 
+    def __str__(self):
+        return self.comments
 
+
+# 用户收藏表
 class UserFavorite(models.Model):
     TYPE_CHOICES = (
         (1, "课程"),
@@ -46,6 +55,7 @@ class UserFavorite(models.Model):
         verbose_name_plural = verbose_name
 
 
+# 用户消息表
 class UserMessage(models.Model):
     user = models.IntegerField(default=0, verbose_name="接收用户")
     message = models.CharField(max_length=500, verbose_name="消息内容")
@@ -57,6 +67,7 @@ class UserMessage(models.Model):
         verbose_name_plural = verbose_name
 
 
+# 用户课程表
 class UserCourse(models.Model):
     course = models.ForeignKey(Course, verbose_name="课程", on_delete=models.CASCADE)
     user = models.ForeignKey(UserProfile, verbose_name="用户", on_delete=models.CASCADE)
