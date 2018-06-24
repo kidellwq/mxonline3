@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'organization',
     'xadmin',
     'crispy_forms',
+    'captcha',
 ]
 
 # 重载user表，使我们自己定义的userprofile表生效
@@ -132,3 +133,16 @@ USE_TZ = False
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 STATIC_URL = '/static/'
+# 静态模版在实际项目中的路径
+STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
+
+# 设置邮箱用户名均可登陆
+AUTHENTICATION_BACKENDS = ('users.views.CustomBackend',)
+
+# 邮件发送设置
+EMAIL_HOST = "smtp.qq.com"
+EMAIL_PORT = 25
+EMAIL_HOST_USER = "kidell@qq.com"
+EMAIL_HOST_PASSWORD = "zvmylvfqiljrcabf"
+EMAIL_USE_TLS = True
+EMAIL_FROM = "kidell@qq.com"
