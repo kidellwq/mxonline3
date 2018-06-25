@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'xadmin',
     'crispy_forms',
     'captcha',
+    'pure_pagination',
 ]
 
 # 重载user表，使我们自己定义的userprofile表生效
@@ -74,6 +75,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.media',
             ],
         },
     },
@@ -146,3 +148,14 @@ EMAIL_HOST_USER = "kidell@qq.com"
 EMAIL_HOST_PASSWORD = "zvmylvfqiljrcabf"
 EMAIL_USE_TLS = True
 EMAIL_FROM = "kidell@qq.com"
+
+# 设置我们上传文件的路径
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# 分页设置
+PAGINATION_SETTINGS = {
+    'PAGE_RANGE_DISPLAYED': 10,
+    'MARGIN_PAGES_DISPLAYED': 2,
+    'SHOW_FIRST_PAGE_WHEN_INVALID': True,
+}

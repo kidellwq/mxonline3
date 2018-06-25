@@ -50,7 +50,7 @@
             <p class="fl hd-tips">慕学网，在线学习平台！</p>
             <ul class="fr hd-bar">
                 <li>服务电话：<span>33333333</span></li>
-                <li><a href="login.html">[登录]</a></li>
+                <li><a href="/login/">[登录]</a></li>
                 <li class="active"><a href="/forgetpwd/">[忘记密码]</a></li>
             </ul>
         </div>
@@ -79,16 +79,21 @@
                 <h2>忘记密码</h2>
                 <form id="jsFindPwdForm" method="post" action="/forgetpwd/" autocomplete="off">
                     {% csrf_token %}
-                    <div class="form-group marb20 ">
+                    <div class="form-group marb20 {% if forget_form.captcha.errors %} errorput {% endif %}">
                         <label>帐&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;号</label>
-                        <input type="text" id="account" name="email" value="None" placeholder="邮箱" />
+                        <input type="text" id="account" name="email" value="{% ifnotequal None forget_form.email.value %}{{ forget_form.email.value }}{% endifnotequal %}" placeholder="邮箱" />
                     </div>
                     <div class="form-group captcha1 marb38">
                         <label>验&nbsp;证&nbsp;码</label>
-                        {{ forget_form.captcha }}
+                        {{ forget_form.captcha }}{{ active_form.captcha }}
 {#                        <img src="/captcha/image/997454dc58799e806f18d21eac296581a8c6ef02/" alt="captcha" class="captcha" /> <input id="id_captcha_0" name="captcha_0" type="hidden" value="997454dc58799e806f18d21eac296581a8c6ef02" /> <input autocomplete="off" id="id_captcha_1" name="captcha_1" type="text" />#}
                     </div>
-                    <div class="error btns" id="jsForgetTips"></div>
+                    <div class="error btns" id="jsForgetTips">
+                        {% for key, error in forget_form.errors.items %}
+                            {{ error }}
+                        {% endfor %}
+                        {{ msg }}
+                    </div>
                     <input type="hidden" name="sms_type" value="1">
                     <input class="btn btn-green" id="jsFindPwdBtn" type="submit" value="提交" />
                     <p class="form-p" style="bottom:40px;">您还可以<a href="/login/"> [直接登录]</a></p>

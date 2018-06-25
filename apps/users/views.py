@@ -1,4 +1,4 @@
-from django.shortcuts import render, HttpResponseRedirect, reverse
+from django.shortcuts import render, HttpResponseRedirect, reverse, redirect
 # 使用django自带的auth认证模块进行密码检验
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.backends import ModelBackend
@@ -6,7 +6,7 @@ from django.contrib.auth.hashers import make_password
 from .models import UserProfile, EmailVerifyRecord
 from django.db.models import Q
 from django.views.generic.base import View
-from .forms import LoginForm, RegisterForm, ActiveForm, ForgetForm
+from .forms import LoginForm, RegisterForm, ActiveForm, ForgetForm, ModifyPwdForm
 from utils.email_send import send_register_eamil
 
 
@@ -122,14 +122,47 @@ class RegisterView(View):
 # 找回密码
 class ForgetPwdView(View):
     def get(self, request):
-        forget_form = ForgetForm()
-        return render(request, 'forgetpwd.html', {'forget_form': forget_form})
+        active_form = ForgetForm(request.POST)
+        return render(request, 'forgetpwd.html', {'active_form': active_form})
 
     def post(self, request):
-        forget_form = ForgetForm()
+        forget_form = ForgetForm(request.POST)
         if forget_form.is_valid():
             email = request.POST.get('email')
             send_register_eamil(email, 'forget')
             return render(request, 'login.html', {"msg": "重置密码邮件已发送,请注意查收"})
         else:
-            return render(request, 'forgetpwd.html', {"forget_from": forget_form })
+            return render(request, 'forgetpwd.html', {"forget_from": forget_form, "msg": "输入错误"})
+
+
+# 重置密码
+class ResetView(View):
+    def get(self, request, active_code):
+        all_record = EmailVerifyRecord.objects.filter(code=active_code)
+        active_form = ActiveForm(request.GET)
+        if all_record:
+            for record in all_record:
+                email = record.email
+                return render(request, 'password_reset.html', {"email": email})
+        else:
+            return render(request, 'forgetpwd.html', {'msg': "您的重置链接无效", "active_form": active_form})
+
+
+# 改变密码
+class ModifyPwdView(View):
+    def post(self, request):
+        modiypwd_form = ModifyPwdForm(request.POST)
+        if modiypwd_form.is_valid():
+            pwd1 = request.POST.get('password1', '')
+            pwd2 = request.POST.get('password2', '')
+            email = request.POST.get('email', '')
+
+            if pwd1 != pwd2:
+                return render(request, 'password_reset.html', {'email': email, "msg": "密码不一致"})
+            user = UserProfile.objects.get(email=email)
+            user.password = make_password(pwd2)
+            user.save()
+            return render(request, 'login.html', {"msg": "密码修改成功，请登录"})
+        else:
+            email = request.POST.get('email', '')
+            return render(request, 'password_reset.html', {"email": email, "modiypwd_form": modiypwd_form})

@@ -15,8 +15,12 @@ Including another URLconf
 """
 from django.urls import path, include, re_path
 import xadmin
+from mxonline3.settings import MEDIA_ROOT
+from django.views.static import serve
 from django.views.generic import TemplateView
-from users.views import LoginView, LogoutView, RegisterView, ActiveUserView, ForgetPwdView
+from users.views import LoginView, LogoutView, RegisterView, ActiveUserView, ForgetPwdView, ResetView, ModifyPwdView
+from organization.views import OrgView
+
 
 urlpatterns = [
     # 后台
@@ -38,5 +42,15 @@ urlpatterns = [
     path('captcha/', include('captcha.urls')),
     # 激活用户的url，邮箱里的连接
     re_path('active/(?P<active_code>.*)/', ActiveUserView.as_view(), name='user_active'),
+    # 重置密码的链接
+    re_path('reset/(?P<active_code>.*)/', ResetView.as_view(), name='reset_pwd'),
+    # 修改密码的链接
+    path('modify/', ModifyPwdView.as_view(), name='modify_pwd'),
+
+    # 机构首页
+    # path('org-list/', OrgView.as_view(), name='org_list'),
+    path('org/', include('organization.urls', namespace='org')),
+    # 图片处理的url
+    re_path(r'^media/(?P<path>.*)', serve, {'document_root': MEDIA_ROOT})
 
 ]

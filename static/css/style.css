@@ -8588,8 +8588,9 @@ table .upload-btn {
     color: #dfdfdf !important;
 }
 
+/*去除加载小圈圈*/
 .scrollLoading {
-    background: url(../images/rolling.gif) no-repeat center center #fff !important;
+    /*background: url(../images/rolling.gif) no-repeat center center #fff !important;*/
 }
 
 .evl-dialog h1 {
