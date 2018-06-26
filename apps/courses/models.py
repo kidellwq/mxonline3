@@ -1,5 +1,6 @@
 from django.db import models
 from datetime import datetime
+from organization.models import CourseOrg
 
 
 # 课程表
@@ -9,6 +10,7 @@ class Course(models.Model):
         ("zj", "中级"),
         ("gj", "高级"),
     )
+    course_org = models.ForeignKey(CourseOrg, on_delete=models.CASCADE, verbose_name=u"所属机构", null=True, blank=True)
     name = models.CharField(max_length=50, verbose_name="课程名")
     desc = models.CharField(max_length=300, verbose_name="课程描述")
     detail = models.TextField(verbose_name="课程详情")

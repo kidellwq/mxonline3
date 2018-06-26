@@ -51,6 +51,8 @@ urlpatterns = [
     # path('org-list/', OrgView.as_view(), name='org_list'),
     path('org/', include('organization.urls', namespace='org')),
     # 图片处理的url
-    re_path(r'^media/(?P<path>.*)', serve, {'document_root': MEDIA_ROOT})
+    re_path(r'^media/(?P<path>.*)', serve, {'document_root': MEDIA_ROOT}),
 
+    # 课程首页
+    path('course/', include('courses.urls', namespace='course')),
 ]
