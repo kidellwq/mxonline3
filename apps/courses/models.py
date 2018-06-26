@@ -1,6 +1,6 @@
 from django.db import models
 from datetime import datetime
-from organization.models import CourseOrg
+from organization.models import CourseOrg, Teacher
 
 
 # 课程表
@@ -11,6 +11,7 @@ class Course(models.Model):
         ("gj", "高级"),
     )
     course_org = models.ForeignKey(CourseOrg, on_delete=models.CASCADE, verbose_name=u"所属机构", null=True, blank=True)
+    teacher = models.ForeignKey(Teacher, verbose_name=u"讲师", null=True, blank=True, on_delete=models.CASCADE)
     name = models.CharField(max_length=50, verbose_name="课程名")
     desc = models.CharField(max_length=300, verbose_name="课程描述")
     detail = models.TextField(verbose_name="课程详情")
@@ -18,6 +19,10 @@ class Course(models.Model):
     learn_times = models.IntegerField(default=0, verbose_name="学习时长(分钟数)")
     students = models.IntegerField(default=0, verbose_name="学习人数")
     fav_nums = models.IntegerField(default=0, verbose_name="收藏人数")
+    category = models.CharField(max_length=20, default="", verbose_name="课程类别")
+    tag = models.CharField(max_length=15, verbose_name=u"课程标签", default=u"")
+    you_need_know = models.CharField(max_length=300, default=u"一颗勤学的心是本课程必要前提", verbose_name=u"课程须知")
+    teacher_tell = models.CharField(max_length=300, default=u"按时交作业,不然叫家长", verbose_name=u"老师告诉你")
     image = models.ImageField(
         upload_to="courses/%Y/%m",
         verbose_name="封面图",
@@ -31,6 +36,15 @@ class Course(models.Model):
 
     def __str__(self):
         return self.name
+
+    def get_zj_nums(self):
+        return self.lesson_set.all().count()
+
+    def get_learn_users(self):
+        return self.usercourse_set.all()[:5]
+
+    def get_teacher_nums(self):
+        return self.course_org.teacher_set.all().count()
 
 
 # 章节表
@@ -53,6 +67,8 @@ class Video(models.Model):
     lesson = models.ForeignKey(Lesson, verbose_name="章节", on_delete=models.CASCADE)
     name = models.CharField(max_length=100, verbose_name="视频名")
     add_time = models.DateTimeField(default=datetime.now, verbose_name="添加时间")
+    url = models.CharField(max_length=200, default="http://blog.lzimo.com/", verbose_name=u"访问地址")
+    learn_times = models.IntegerField(default=0, verbose_name=u"学习时长(分钟数)")
 
     class Meta:
         verbose_name = "视频"

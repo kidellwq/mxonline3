@@ -153,9 +153,3 @@ EMAIL_FROM = "kidell@qq.com"
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-# 分页设置
-PAGINATION_SETTINGS = {
-    'PAGE_RANGE_DISPLAYED': 10,
-    'MARGIN_PAGES_DISPLAYED': 2,
-    'SHOW_FIRST_PAGE_WHEN_INVALID': True,
-}
