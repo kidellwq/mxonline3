@@ -35,7 +35,7 @@
 	                                </dd>
                                 </dl>
                                 <div class="btn">
-	                                <a class="personcenter fl" href="/usercenter-info/">进入个人中心</a>
+	                                <a class="personcenter fl" href="#">进入个人中心</a>
 	                                <a class="fr" href="{% url 'logout' %}">退出</a>
                                 </div>
                             </div>
@@ -95,13 +95,7 @@
 </section>
 <!--crumbs start-->
 {% block custom_bread %}
-    <section>
-        <div class="wp">
-            <ul  class="crumbs">
-                <li><a href="{% url 'index' %}">首页</a>></li>
-            </ul>
-        </div>
-    </section>
+
 {% endblock %}
 
 {% block content %}

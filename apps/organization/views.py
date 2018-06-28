@@ -69,6 +69,7 @@ class AddUserAskView(View):
 # 机构首页
 class OrgHomeView(View):
     def get(self, request, org_id):
+        course_page = 'home'
         course_org = CourseOrg.objects.get(id=int(org_id))
         all_courses = course_org.course_set.all()[:4]
         all_teacher = course_org.teacher_set.all()[:2]
@@ -76,24 +77,27 @@ class OrgHomeView(View):
             'all_courses': all_courses,
             'all_teacher': all_teacher,
             'course_org': course_org,
+            'course_page': course_page,
         })
 
 
 # 课程首页
 class OrgCourseView(View):
     def get(self, request, org_id):
+        course_page = 'course'
         course_org = CourseOrg.objects.get(id=int(org_id))
         all_courses = course_org.course_set.all()
         return render(request, 'org-detail-course.html', {
             'course_org': course_org,
             'all_courses': all_courses,
+            'course_page': course_page,
         })
 
 
 # 详情首页
 class OrgDescView(View):
     def get(self, request, org_id):
-        current_page = 'desc'
+        course_page = 'desc'
         course_org = CourseOrg.objects.get(id=int(org_id))
         has_fav = False
         if request.user.is_authenticated:
@@ -101,19 +105,21 @@ class OrgDescView(View):
                 has_fav = True
         return render(request, 'org-detail-desc.html', {
             'course_org': course_org,
-            "current_page": current_page,
             "has_fav": has_fav,
+            'course_page': course_page,
         })
 
 
 # 教师首页
 class OrgTeacherView(View):
     def get(self, request, org_id):
+        course_page = 'teacher'
         course_org = CourseOrg.objects.get(id=int(org_id))
         all_courses = course_org.teacher_set.all()
         return render(request, 'org-detail-teachers.html', {
             'course_org': course_org,
             'all_courses': all_courses,
+            'course_page': course_page,
         })
 
 

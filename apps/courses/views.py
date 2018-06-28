@@ -1,8 +1,9 @@
-from django.shortcuts import render
+from django.shortcuts import render, HttpResponse
 from django.views.generic.base import View
-from courses.models import Course, CourseResource
+from courses.models import Course, CourseResource, Video
 from pure_pagination import Paginator, EmptyPage, PageNotAnInteger
-from operation.models import UserFavorite
+from operation.models import UserFavorite, CourseComments, UserCourse
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 # 列表页
@@ -64,23 +65,95 @@ class DetailListView(View):
 
 
 # 信息页
-class CourseInfoView(View):
+class CourseInfoView(LoginRequiredMixin, View):
+    login_url = '/login/'
+    redirect_field_name = 'redirect_to'
+
     def get(self, request, course_id):
         # 此处的id为表默认为我们添加的值。
         course = Course.objects.get(id=int(course_id))
-        # 是否收藏课程
+        user_courses = UserCourse.objects.filter(user=request.user, course=course)
+        if not user_courses:
+            user_course = UserCourse(user=request.user, course=course)
+            course.students += 1
+            course.save()
+            user_course.save()
+        all_resources = CourseResource.objects.filter(course=course)
+        user_courses = UserCourse.objects.filter(course=course)
+        user_ids = [user_course.course_id for user_course in user_courses]
+        all_user_courses = UserCourse.objects.filter(user_id__in=user_ids)
+        course_ids = [user_course.course_id for user_course in all_user_courses]
+        relate_courses = Course.objects.filter(id__in=course_ids).order_by("-click_nums").exclude(id=course.id)[:4]
         return render(request, "course-video.html", {
             "course": course,
+            "all_resources": all_resources,
+            "relate_courses": relate_courses,
         })
 
 
 # 评论页
-class CommentsView(View):
+class CommentsView(LoginRequiredMixin, View):
+    login_url = '/login/'
+    redirect_field_name = 'redirect_to'
+
     def get(self, request, course_id):
-        # 此处的id为表默认为我们添加的值。
         course = Course.objects.get(id=int(course_id))
+        all_comments = CourseComments.objects.filter(course_id=course_id).order_by('-add_time')
         all_resources = CourseResource.objects.filter(course=course)
+        user_courses = UserCourse.objects.filter(course=course)
+        user_ids = [user_course.user_id for user_course in user_courses]
+        all_user_courses = UserCourse.objects.filter(user_id__in=user_ids)
+        course_ids = [user_course.course_id for user_course in all_user_courses]
+        relate_courses = Course.objects.filter(id__in=course_ids).order_by("-click_nums").exclude(id=course.id)[:4]
         return render(request, "course-comment.html", {
             "course": course,
             "all_resources": all_resources,
+            'all_comments': all_comments,
+            'relate_courses': relate_courses,
         })
+
+
+# Ajax 评论
+class AddCommentsView(View):
+    def post(self, request):
+        if not request.user.is_authenticated:
+            return HttpResponse('{"status":"fail","msg":"用户未登录"}', content_type='application/json')
+        course_id = request.POST.get('course_id', 0)
+        comments = request.POST.get('comments', '')
+        if int(course_id) > 0 and comments:
+            course_comments = CourseComments()
+            course = Course.objects.get(id=int(course_id))
+            course_comments.course = course
+            course_comments.comments = comments
+            course_comments.user = request.user
+            course_comments.save()
+            return HttpResponse('{"status":"success", "msg":"评论成功"}', content_type='application/json')
+        else:
+            return HttpResponse('{"status":"fail", "msg":"评论失败"}', content_type='application/json')
+
+
+# 视频播放
+class VideoPlayView(LoginRequiredMixin, View):
+    login_url = '/login/'
+    redirect_field_name = 'redirect_to'
+
+    def get(self, request, video_id):
+        video = Video.objects.get(id=int(video_id))
+        course = video.lesson.course
+        user_courses = UserCourse.objects.filter(user=request.user, course=course)
+        if not user_courses:
+            user_course = UserCourse(user=request.user, course=course)
+            user_course.save()
+        all_resources = CourseResource.objects.filter(course=course)
+        user_courses = UserCourse.objects.filter(course=course)
+        user_ids = [user_course.user_id for user_course in user_courses]
+        all_user_courses = UserCourse.objects.filter(user_id__in=user_ids)
+        course_ids = [user_course.course_id for user_course in all_user_courses]
+        relate_courses = Course.objects.filter(id__in=course_ids).order_by("-click_nums").exclude(id=course.id)[:4]
+        return render(request, "course-play.html", {
+            "course": course,
+            "all_resources": all_resources,
+            "relate_courses": relate_courses,
+            "video": video,
+        })
+
