@@ -4,6 +4,7 @@ from courses.models import Course, CourseResource, Video
 from pure_pagination import Paginator, EmptyPage, PageNotAnInteger
 from operation.models import UserFavorite, CourseComments, UserCourse
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import Q
 
 
 # 列表页
@@ -11,6 +12,9 @@ class CourseListView(View):
     def get(self, request):
         all_course = Course.objects.all()
         hot_courses = Course.objects.all().order_by("-students")[:3]
+        search_keywords = request.GET.get('keywords', '')
+        if search_keywords:
+            all_course = all_course.filter(Q(name__icontains=search_keywords) | Q(desc__icontains=search_keywords) | Q(detail__icontains=search_keywords))
 
         # 排序
         sort = request.GET.get('sort', '')

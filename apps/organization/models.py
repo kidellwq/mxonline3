@@ -53,6 +53,7 @@ class CourseOrg(models.Model):
 class Teacher(models.Model):
     # 教师与机构同样是一对多关系
     org = models.ForeignKey(CourseOrg, verbose_name="所属机构", on_delete=models.CASCADE)
+    age = models.IntegerField(default=18, verbose_name=u"年龄")
     name = models.CharField(max_length=50, verbose_name="教师名称")
     work_years = models.IntegerField(default=0, verbose_name="工作年限")
     work_company = models.CharField(max_length=50, verbose_name="就职公司")

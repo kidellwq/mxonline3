@@ -1,5 +1,6 @@
 from django import forms
 from captcha.fields import CaptchaField
+from .models import UserProfile
 
 
 # 登陆表单的验证
@@ -30,3 +31,18 @@ class ForgetForm(forms.Form):
 class ModifyPwdForm(forms.Form):
     password1 = forms.CharField(required=True, min_length=5)
     password2 = forms.CharField(required=True, min_length=5)
+
+
+# 用户信息验证
+class UserInfoForm(forms.ModelForm):
+    class Meta:
+        model = UserProfile
+        fields = ['nick_name', 'gender', 'birthday', 'address', 'mobile']
+
+
+# 文件上传
+class UploadImageForm(forms.ModelForm):
+
+    class Meta:
+        model = UserProfile
+        fields = ['image']

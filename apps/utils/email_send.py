@@ -56,3 +56,16 @@ def send_register_eamil(email, send_type="register"):
         msg = EmailMessage(email_title, email_body, EMAIL_FROM, [email])
         msg.content_subtype = "html"
         send_status = msg.send()
+
+    elif send_type == 'update':
+        code = random_str(4)
+        email_title = "kidell慕课小站 修改邮箱验证码"
+        email_body = loader.render_to_string(
+            "email_update_email.html",  # 需要渲染的html模板
+            {
+                "active_code": code  # 参数
+            }
+        )
+        msg = EmailMessage(email_title, email_body, EMAIL_FROM, [email])
+        msg.content_subtype = "html"
+        send_status = msg.send()

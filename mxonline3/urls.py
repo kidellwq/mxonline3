@@ -18,7 +18,7 @@ import xadmin
 from mxonline3.settings import MEDIA_ROOT
 from django.views.static import serve
 from django.views.generic import TemplateView
-from users.views import LoginView, LogoutView, RegisterView, ActiveUserView, ForgetPwdView, ResetView, ModifyPwdView
+from users.views import LoginView, LogoutView, RegisterView, ActiveUserView, ForgetPwdView, ResetView, ModifyPwdView, IndexView
 from organization.views import OrgView
 
 
@@ -26,8 +26,10 @@ urlpatterns = [
     # 后台
     path('xadmin/', xadmin.site.urls),
     # 首页
-    path('', TemplateView.as_view(template_name='index.html'), name='index'),
-    path('index/', TemplateView.as_view(template_name='index.html'), name='index'),
+    # path('', TemplateView.as_view(template_name='index.html'), name='index'),
+    # path('index/', TemplateView.as_view(template_name='index.html'), name='index'),
+    path('', IndexView.as_view(), name='index'),
+    path('index/', IndexView.as_view(), name='index'),
     # 登陆
     # path('login/', TemplateView.as_view(template_name='login.html'), name='login'),
     # path('login/', user_login, name='login'),
@@ -55,4 +57,7 @@ urlpatterns = [
 
     # 课程首页
     path('course/', include('courses.urls', namespace='course')),
+
+    # 个人中心
+    path('users/', include('users.urls', namespace='users')),
 ]

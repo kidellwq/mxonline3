@@ -29,7 +29,8 @@ class UserProfile(AbstractUser):
     image = models.ImageField(
         upload_to="image/%Y/%m",
         default="image/default.png",
-        max_length=100
+        max_length=100,
+        verbose_name="头像"
     )
 
     # Meta选项，后台显示名
@@ -41,6 +42,10 @@ class UserProfile(AbstractUser):
     def __str__(self):
         return self.username
 
+    def unread_nums(self):
+        from operation.models import UserMessage
+        return UserMessage.objects.filter(has_read=False, user=self.id).count()
+
 
 # 邮箱验证码表
 class EmailVerifyRecord(models.Model):
@@ -48,6 +53,7 @@ class EmailVerifyRecord(models.Model):
     SEND_CHOICE = (
         ("register", "注册"),
         ("forget", "找回密码"),
+        ("update", u"修改邮箱")
     )
     # 验证码
     code = models.CharField(max_length=20, verbose_name="验证码")
