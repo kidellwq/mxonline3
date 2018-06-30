@@ -24,9 +24,9 @@ sys.path.insert(0, os.path.join(BASE_DIR, 'extras_apps'))
 SECRET_KEY = '_o84x5f-yavzxw^&-^_k9l_6@a)zz1+x^bsu#d9(6v)l(91wj%'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'crispy_forms',
     'captcha',
     'pure_pagination',
+    'DjangoUeditor',
 ]
 
 # 重载user表，使我们自己定义的userprofile表生效

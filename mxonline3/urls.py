@@ -15,6 +15,7 @@ Including another URLconf
 """
 from django.urls import path, include, re_path
 import xadmin
+import DjangoUeditor
 from mxonline3.settings import MEDIA_ROOT
 from django.views.static import serve
 from django.views.generic import TemplateView
@@ -60,4 +61,9 @@ urlpatterns = [
 
     # 个人中心
     path('users/', include('users.urls', namespace='users')),
+
+    path('ueditor/', include('DjangoUeditor.urls')),
+
 ]
+
+handler404 = 'users.views.page_not_found'

@@ -1,6 +1,7 @@
 from django.db import models
 from datetime import datetime
 from organization.models import CourseOrg, Teacher
+from DjangoUeditor.models import UEditorField
 
 
 # 课程表
@@ -14,7 +15,7 @@ class Course(models.Model):
     teacher = models.ForeignKey(Teacher, verbose_name=u"讲师", null=True, blank=True, on_delete=models.CASCADE)
     name = models.CharField(max_length=50, verbose_name="课程名")
     desc = models.CharField(max_length=300, verbose_name="课程描述")
-    detail = models.TextField(verbose_name="课程详情")
+    detail = UEditorField(verbose_name=u"课程详情", width=600, height=300, imagePath="courses/ueditor/", filePath="courses/ueditor/",default='')
     degree = models.CharField(max_length=2, choices=DEGREE_CHOICES, verbose_name="课程难度")
     learn_times = models.IntegerField(default=0, verbose_name="学习时长(分钟数)")
     students = models.IntegerField(default=0, verbose_name="学习人数")
@@ -23,9 +24,11 @@ class Course(models.Model):
     tag = models.CharField(max_length=15, verbose_name=u"课程标签", default=u"")
     you_need_know = models.CharField(max_length=300, default=u"一颗勤学的心是本课程必要前提", verbose_name=u"课程须知")
     teacher_tell = models.CharField(max_length=300, default=u"按时交作业,不然叫家长", verbose_name=u"老师告诉你")
+    is_banner = models.BooleanField(default=False, verbose_name="是否轮播")
     image = models.ImageField(
         upload_to="courses/%Y/%m",
         verbose_name="封面图",
+        blank=True,
         max_length=100)
     click_nums = models.IntegerField(default=0, verbose_name="点击数")
     add_time = models.DateTimeField(default=datetime.now, verbose_name="添加时间")

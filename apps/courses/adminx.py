@@ -20,6 +20,7 @@ class CourseAdmin(object):
         'degree',
         'learn_times',
         'students']
+    style_fields = {"detail": "ueditor"}
 
 
 class LessonAdmin(object):

@@ -21,7 +21,7 @@ class GlobalSettings(object):
     site_title = "kidell: 慕课后台管理站"
     site_footer = "kidell's mooc"
     # 收起菜单
-    menu_style = "accordion"
+    # menu_style = "accordion"
 
     def get_site_menu(self):
         return (

@@ -3,7 +3,7 @@ from django.shortcuts import render, HttpResponseRedirect, reverse, redirect, Ht
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.backends import ModelBackend
 from django.contrib.auth.hashers import make_password
-from .models import UserProfile, EmailVerifyRecord
+from .models import UserProfile, EmailVerifyRecord, Banner
 from django.db.models import Q
 from django.views.generic.base import View
 from .forms import LoginForm, RegisterForm, ActiveForm, ForgetForm, ModifyPwdForm, UploadImageForm, UserInfoForm
@@ -181,8 +181,15 @@ class ModifyPwdView(View):
 # 首页
 class IndexView(View):
     def get(self, request):
-        return render(request, 'index.html',{
-
+        all_banner = Banner.objects.all().order_by('index')[:5]
+        courses = Course.objects.filter(is_banner=False)[:6]
+        banner_courses = Course.objects.filter(is_banner=True)[:3]
+        course_orgs = CourseOrg.objects.all()[:15]
+        return render(request, 'index.html', {
+            'all_banner': all_banner,
+            'courses': courses,
+            'banner_courses': banner_courses,
+            'course_orgs': course_orgs,
         })
 
 
@@ -347,3 +354,12 @@ class MyMessageView(LoginRequiredMixin, View):
         return render(request, "usercenter-message.html", {
             "messages": messages,
         })
+
+
+# 404页面
+def page_not_found(request):
+    from django.shortcuts import render_to_response
+    response = render_to_response("404.html", {})
+    # 设置response的状态码
+    response.status_code = 404
+    return response
