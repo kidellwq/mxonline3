@@ -24,9 +24,9 @@ sys.path.insert(0, os.path.join(BASE_DIR, 'extras_apps'))
 SECRET_KEY = '_o84x5f-yavzxw^&-^_k9l_6@a)zz1+x^bsu#d9(6v)l(91wj%'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -138,6 +138,7 @@ USE_TZ = False
 STATIC_URL = '/static/'
 # 静态模版在实际项目中的路径
 STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
+# STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 # 设置邮箱用户名均可登陆
 AUTHENTICATION_BACKENDS = ('users.views.CustomBackend',)
